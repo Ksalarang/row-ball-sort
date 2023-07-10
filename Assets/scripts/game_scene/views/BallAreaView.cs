@@ -1,5 +1,4 @@
-﻿using game_scene.controllers;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using Utils;
 using Utils.Extensions;
@@ -11,8 +10,6 @@ public class BallAreaView : MonoBehaviour {
     [SerializeField] float distanceBetweenBalls;
 
     [Inject] ArtView artView;
-    [Inject] CanvasController canvasController;
-    [Inject] BallAreaController controller;
 
     Vector2Int artSize;
     Rect ballAreaRect;
@@ -22,7 +19,8 @@ public class BallAreaView : MonoBehaviour {
     
     public void onArtDataReady() {
         artSize = artView.getArtSizeInPixels();
-        ballAreaRect = ballAreaImage.rectTransform.getWorldRect(canvasController.getCanvasMinScale());
+        ballAreaRect = ballAreaImage.rectTransform.getWorldRect();
+        // Debug.Log($"ball area: {ballAreaRect}");
         var ballWidth = (ballAreaRect.width - (artSize.x + 1) * distanceBetweenBalls) / artSize.x;
         ballSize = new Vector3(ballWidth, ballWidth);
         step = ballWidth + distanceBetweenBalls;

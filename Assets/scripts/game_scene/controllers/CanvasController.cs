@@ -9,6 +9,7 @@ public class CanvasController {
     [Inject]
     public CanvasController(CanvasScaler canvasScaler) {
         this.canvasScaler = canvasScaler;
+        // Debug.Log($"width scale: {getCanvasWidthScale()}, height scale: {getCanvasHeightScale()}");
     }
 
     public float getCanvasWidthScale() => Screen.width / canvasScaler.referenceResolution.x;
