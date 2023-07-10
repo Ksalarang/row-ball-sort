@@ -35,5 +35,7 @@ public static class RandomUtils {
     public static bool nextBool() => Random.value > 0.5f;
 
     public static float nextFloat(float min = 0f, float max = 1f) => min + Random.value * (max - min);
+
+    public static float nextInt(int minInclusive, int maxExclusive) => Random.Range(minInclusive, maxExclusive);
 }
 }

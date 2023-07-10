@@ -63,7 +63,7 @@ public class BallInputController : MonoBehaviour {
                 touchedBefore = false;
             } else return;
         }
-        switch (phase) {
+        switch (phase) { 
             case TouchPhase.Began:
                 startPosition = camera.ScreenToWorldPoint(Input.mousePosition);
                 startedTouchInArea = heightRange.min < startPosition.y && startPosition.y < heightRange.max;
@@ -71,7 +71,7 @@ public class BallInputController : MonoBehaviour {
                 rowIndex = (int) ((startPosition.y + verticalOffset) / rowHeight);
                 log.log($"start touch at row {rowIndex}");
                 break;
-            case TouchPhase.Moved: {
+            case TouchPhase.Moved:
                 if (startedTouchInArea) {
                     var delta = startPosition.x - currentPosition.x;
                     if (Mathf.Abs(delta) > threshold) {
@@ -82,7 +82,6 @@ public class BallInputController : MonoBehaviour {
                     }
                 }
                 break;
-            }
             case TouchPhase.Ended:
                 if (startedTouchInArea) {
                     log.log($"end touch");
