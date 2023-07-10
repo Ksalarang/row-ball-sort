@@ -85,6 +85,7 @@ public class BallInputController : MonoBehaviour {
             case TouchPhase.Ended:
                 if (startedTouchInArea) {
                     log.log($"end touch");
+                    ballAreaController.checkIfComplete(rowIndex);
                 }
                 break;
         }

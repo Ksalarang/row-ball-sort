@@ -1,5 +1,6 @@
 using game_scene.controllers;
 using game_scene.views;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -16,6 +17,9 @@ public class GameInstaller : MonoInstaller {
     [Header("Views")]
     [SerializeField] ArtView artView;
     [SerializeField] BallAreaView ballAreaView;
+    [Header("UI elements")]
+    [SerializeField] TMP_Text testLabel;
+    [SerializeField] Button shuffleButton;
     [Header("Prefabs")]
     [SerializeField] GameObject ballPrefab;
     [Header("Misc")] [SerializeField] new Camera camera;
@@ -31,6 +35,9 @@ public class GameInstaller : MonoInstaller {
         // views
         bind(artView);
         bind(ballAreaView);
+        // UI elements
+        bind(testLabel, UiElementId.TestLabel);
+        bind(shuffleButton, UiElementId.ShuffleButton);
         // prefabs
         bind(ballPrefab, PrefabId.Ball);
         // misc
@@ -53,6 +60,11 @@ public class GameInstaller : MonoInstaller {
     void bindWithInterfaces<T>(T instance) {
         Container.BindInterfacesAndSelfTo<T>().FromInstance(instance);
     }
+}
+
+public enum UiElementId {
+    TestLabel,
+    ShuffleButton,
 }
 
 public enum PrefabId {
