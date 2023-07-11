@@ -1,4 +1,4 @@
-﻿using System;
+﻿using game_scene.models;
 using game_scene.views;
 using UnityEngine;
 using Utils;
@@ -7,12 +7,11 @@ using Zenject;
 
 namespace game_scene.controllers {
 public class BallInputController : MonoBehaviour {
-    [SerializeField] float threshold;
-    
     [Inject] new Camera camera;
     [Inject] BallAreaView ballAreaView;
     [Inject] BallAreaController ballAreaController;
     [Inject] ArtView artView;
+    [Inject] InputSettings settings;
 
     Log log;
     bool isMobile;
@@ -92,7 +91,7 @@ public class BallInputController : MonoBehaviour {
                         swipeDirectionDetermined = true;
                     }
                     switch (vertical) {
-                        case true when !swipeProcessed && Mathf.Abs(deltaY) > threshold: {
+                        case true when !swipeProcessed && Mathf.Abs(deltaY) > 1 - settings.verticalSwipeSensitivity: {
                             var up = deltaY < 0;
                             ballAreaController.onSwipe(up, rowIndex, startPosition);
                             startPosition = currentPosition;
@@ -100,7 +99,7 @@ public class BallInputController : MonoBehaviour {
                             log.log($"swipe " + (up ? "up" : "down"));
                             break;
                         }
-                        case false when Mathf.Abs(deltaX) > threshold: {
+                        case false when Mathf.Abs(deltaX) > 1 - settings.horizontalSwipeSensitivity: {
                             var left = deltaX > 0;
                             ballAreaController.shiftRow(rowIndex, left);
                             startPosition = currentPosition;

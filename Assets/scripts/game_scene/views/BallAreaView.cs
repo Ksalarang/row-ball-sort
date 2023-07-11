@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using game_scene.models;
+using UnityEngine;
 using UnityEngine.UI;
 using Utils.Extensions;
 using utils.structs;
@@ -7,9 +8,9 @@ using Zenject;
 namespace game_scene.views {
 public class BallAreaView : MonoBehaviour {
     [SerializeField] Image ballAreaImage;
-    [SerializeField] float distanceBetweenBalls;
 
     [Inject] ArtView artView;
+    [Inject] BallAreaSettings settings;
 
     Vector2Int artSize;
     Rect ballAreaRect;
@@ -21,10 +22,10 @@ public class BallAreaView : MonoBehaviour {
         artSize = artView.getArtSizeInPixels();
         ballAreaRect = ballAreaImage.rectTransform.getWorldRect();
         // Debug.Log($"ball area: {ballAreaRect}");
-        var ballWidth = (ballAreaRect.width - (artSize.x + 1) * distanceBetweenBalls) / artSize.x;
+        var ballWidth = (ballAreaRect.width - (artSize.x + 1) * settings.distanceBetweenBalls) / artSize.x;
         ballSize = new Vector3(ballWidth, ballWidth);
-        step = ballWidth + distanceBetweenBalls;
-        var offset = distanceBetweenBalls + ballWidth / 2;
+        step = ballWidth + settings.distanceBetweenBalls;
+        var offset = settings.distanceBetweenBalls + ballWidth / 2;
         bottomLeft = new Vector3(ballAreaRect.x + offset, ballAreaRect.y + offset);
     }
     
@@ -51,6 +52,6 @@ public class BallAreaView : MonoBehaviour {
 
     public FloatRange getHeightRange() => new(ballAreaRect.yMin, ballAreaRect.yMax);
 
-    public float getRowHeight() => ballSize.x + distanceBetweenBalls;
+    public float getRowHeight() => ballSize.x + settings.distanceBetweenBalls;
 }
 }

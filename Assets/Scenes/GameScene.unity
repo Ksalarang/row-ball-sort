@@ -154,6 +154,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   artScrambleSettings:
     scramblePercentage: 0.25
+  inputSettings:
+    verticalSwipeSensitivity: 0.8
+    horizontalSwipeSensitivity: 0.8
+  ballAreaSettings:
+    distanceBetweenBalls: 0.02
 --- !u!4 &33482568
 Transform:
   m_ObjectHideFlags: 0
@@ -506,7 +511,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01ffc9615bfd456ea518a2e3cde6f5ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  threshold: 0.2
 --- !u!1 &1219330236
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,7 +776,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballAreaImage: {fileID: 2026459826}
-  distanceBetweenBalls: 0.02
 --- !u!114 &1314301325
 MonoBehaviour:
   m_ObjectHideFlags: 0
