@@ -1,4 +1,5 @@
 using game_scene.controllers;
+using game_scene.models;
 using game_scene.views;
 using TMPro;
 using UnityEngine;
@@ -22,8 +23,10 @@ public class GameInstaller : MonoInstaller {
     [SerializeField] Button shuffleButton;
     [Header("Prefabs")]
     [SerializeField] GameObject ballPrefab;
-    [Header("Misc")] [SerializeField] new Camera camera;
+    [Header("Misc")]
+    [SerializeField] new Camera camera;
     [SerializeField] CanvasScaler canvasScaler;
+    [SerializeField] GameSettings gameSettings;
 
     public override void InstallBindings() {
         bind(gameController);
@@ -43,6 +46,9 @@ public class GameInstaller : MonoInstaller {
         // misc
         bind(camera);
         bind(canvasScaler);
+        // settings
+        bind(gameSettings);
+        bind(gameSettings.artScrambleSettings);
     }
     
     void bind<T>(T instance) {

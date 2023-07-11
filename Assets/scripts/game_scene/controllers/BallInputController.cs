@@ -1,6 +1,7 @@
 ﻿using game_scene.views;
 using UnityEngine;
 using Utils;
+using utils.structs;
 using Zenject;
 
 namespace game_scene.controllers {

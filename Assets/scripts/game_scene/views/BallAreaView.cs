@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using Utils;
 using Utils.Extensions;
+using utils.structs;
 using Zenject;
 
 namespace game_scene.views {
@@ -30,12 +31,16 @@ public class BallAreaView : MonoBehaviour {
     
     public Vector3 getBallSize() => ballSize;
 
+    public Vector3 getBallPosition(Vector2Int coord) => getBallPosition(coord.x, coord.y);
+    
     public Vector3 getBallPosition(int x, int y) {
         return new Vector3(
             bottomLeft.x + x * step,
             bottomLeft.y + y * step
         );
     }
+
+    public Vector3 getBallShiftPosition(Vector2Int coord) => getBallShiftPosition(coord.x, coord.y);
 
     public Vector3 getBallShiftPosition(int x, int y) {
         if (x < 0) x = artSize.x - 1;

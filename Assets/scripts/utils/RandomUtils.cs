@@ -36,6 +36,33 @@ public static class RandomUtils {
 
     public static float nextFloat(float min = 0f, float max = 1f) => min + Random.value * (max - min);
 
-    public static float nextInt(int minInclusive, int maxExclusive) => Random.Range(minInclusive, maxExclusive);
+    public static int nextInt(int minInclusive, int maxExclusive) => Random.Range(minInclusive, maxExclusive);
+
+    public static List<int> nonRepeatingList(int count, int minInclusive, int maxExclusive) {
+        if (maxExclusive <= minInclusive || count < 0 || 
+            (count > maxExclusive - minInclusive && maxExclusive - minInclusive > 0)) {
+            throw new ArgumentException($"incorrect count ({count}) or range ({minInclusive}, {maxExclusive})");
+        }
+        var list = new List<int>();
+        for (var i = 0; i < count; i++) {
+            int num;
+            do {
+                num = Random.Range(minInclusive, maxExclusive);
+            } while (list.Contains(num));
+            list.Add(num);
+        }
+        return list;
+    }
+
+    public static List<int> randomList(int count, int minInclusive, int maxExclusive) {
+        if (maxExclusive <= minInclusive || count < 0) {
+            throw new ArgumentException($"incorrect count ({count}) or range ({minInclusive}, {maxExclusive})");
+        }
+        var list = new List<int>();
+        for (var i = 0; i < count; i++) {
+            list.Add(nextInt(minInclusive, maxExclusive));
+        }
+        return list;
+    }
 }
 }

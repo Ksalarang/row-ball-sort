@@ -15,9 +15,9 @@ public class Ball : MonoBehaviour {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public void setPosition(Vector3 position, int x, int y) {
+    public void setPosition(Vector3 position, int gridX, int gridY) {
         transform.position = position;
-        gridPosition = new Vector2Int(x, y);
+        gridPosition = new Vector2Int(gridX, gridY);
     }
 }
 }
