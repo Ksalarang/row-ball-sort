@@ -45,6 +45,7 @@ public class BallInputController : MonoBehaviour {
     bool swipeDirectionDetermined;
     bool swipeProcessed;
     bool vertical;
+    Direction swipeDirection;
 
     void Update() {
         #region determine touch phase
@@ -88,6 +89,11 @@ public class BallInputController : MonoBehaviour {
                     var deltaY = startPosition.y - currentPosition.y;
                     if (!swipeDirectionDetermined) {
                         vertical = Mathf.Abs(deltaY) > Mathf.Abs(deltaX);
+                        if (vertical) {
+                            swipeDirection = deltaY < 0 ? Direction.Up : Direction.Down;
+                        } else {
+                            swipeDirection = deltaX > 0 ? Direction.Left : Direction.Right;
+                        }
                         swipeDirectionDetermined = true;
                     }
                     switch (vertical) {
@@ -111,7 +117,7 @@ public class BallInputController : MonoBehaviour {
                 break;
             case TouchPhase.Ended:
                 if (startedTouchInArea) {
-                    ballAreaController.checkIfComplete(rowIndex);
+                    ballAreaController.checkIfComplete(rowIndex, swipeDirection);
                     swipeDirectionDetermined = false;
                     swipeProcessed = false;
                     log.log($"end touch");

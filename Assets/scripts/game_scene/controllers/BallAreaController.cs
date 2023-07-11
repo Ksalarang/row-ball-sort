@@ -169,8 +169,14 @@ public class BallAreaController : MonoBehaviour {
         }
     }
 
-    public void checkIfComplete(int rowIndex) {
+    public void checkIfComplete(int rowIndex, Direction swipeDirection) {
         checkRow(rowIndex);
+        if (swipeDirection.isVertical()) {
+            var secondRowIndex = rowIndex + swipeDirection.toVector().y;
+            if (0 <= secondRowIndex && secondRowIndex < artSize.y) {
+                checkRow(secondRowIndex);
+            }
+        }
         artSolved = rowsSolved.All(rowSolved => rowSolved);
         testLabel.text = artSolved ? "art is solved!" : "solving..";
         if (artSolved) log.log("art is solved");

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace game_scene.models {
 public enum Direction {
@@ -24,5 +25,7 @@ public static class DirectionExtensions {
         }
         return vector;
     }
+
+    public static bool isVertical(this Direction direction) => direction is Direction.Up or Direction.Down;
 }
 }
