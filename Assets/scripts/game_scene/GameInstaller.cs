@@ -21,6 +21,7 @@ public class GameInstaller : MonoInstaller {
     [Header("UI elements")]
     [SerializeField] TMP_Text testLabel;
     [SerializeField] Button shuffleButton;
+    [SerializeField] Button resetButton;
     [Header("Prefabs")]
     [SerializeField] GameObject ballPrefab;
     [Header("Misc")]
@@ -41,6 +42,7 @@ public class GameInstaller : MonoInstaller {
         // UI elements
         bind(testLabel, UiElementId.TestLabel);
         bind(shuffleButton, UiElementId.ShuffleButton);
+        bind(resetButton, UiElementId.ResetButton);
         // prefabs
         bind(ballPrefab, PrefabId.Ball);
         // misc
@@ -71,6 +73,7 @@ public class GameInstaller : MonoInstaller {
 public enum UiElementId {
     TestLabel,
     ShuffleButton,
+    ResetButton,
 }
 
 public enum PrefabId {

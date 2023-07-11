@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Text;
 using game_scene.models;
 using game_scene.views;
 using TMPro;
@@ -17,12 +16,14 @@ public class BallAreaController : MonoBehaviour {
     [Inject] BallFactory ballFactory;
     [Inject(Id = UiElementId.TestLabel)] TMP_Text testLabel;
     [Inject(Id = UiElementId.ShuffleButton)] Button shuffleButton;
+    [Inject(Id = UiElementId.ResetButton)] Button resetButton;
     [Inject] ArtScrambleSettings artScrambleSettings;
 
     Log log;
-    Ball[,] balls;
-    Vector2Int[] coords;
     GameObject ballContainer;
+    Ball[,] balls;
+    Ball[,] ballsCopy;
+    Vector2Int[] coords;
     Vector2Int artSize;
     bool[] rowsSolved;
     bool artSolved;
@@ -30,28 +31,34 @@ public class BallAreaController : MonoBehaviour {
     void Awake() {
         log = new(GetType());
         ballContainer = new("Balls");
+        shuffleButton.onClick.AddListener(scrambleBalls);
+        resetButton.onClick.AddListener(resetBalls);
     }
 
     void Start() {
         artSize = artView.getArtSizeInPixels();
-        balls = new Ball[artSize.x, artSize.y];
         initCoords();
         rowsSolved = new bool[artSize.y];
         createBalls();
         testLabel.text = "";
-        scrambleBalls();
+        // scrambleBalls();
     }
 
     void createBalls() {
+        balls = new Ball[artSize.x, artSize.y];
+        ballsCopy = new Ball[artSize.x, artSize.y];
         for (var x = 0; x < artSize.x; x++) {
             for (var y = 0; y < artSize.y; y++) {
                 var ball = ballFactory.create();
                 var ballTransform = ball.transform;
                 ballTransform.SetParent(ballContainer.transform);
                 ballTransform.localScale = view.getBallSize();
-                ball.setPosition(view.getBallPosition(x, y), x, y);
+                var gridPosition = new Vector2Int(x, y);
+                ball.setPosition(view.getBallPosition(gridPosition), gridPosition);
+                ball.initialPosition = gridPosition;
                 ball.color = artView.getPixelColor(x, y);
-                balls[x,y] = ball;
+                balls[x, y] = ball;
+                ballsCopy[x, y] = ball;
             }
         }
     }
@@ -80,11 +87,10 @@ public class BallAreaController : MonoBehaviour {
 
     void scrambleBalls() {
         var scrambleAmount = (int) (artSize.x * artSize.y * artScrambleSettings.scramblePercentage);
-        coords.shuffle();
+        coords.shuffle(); //todo: optimize
         for (var i = 0; i < scrambleAmount; i++) {
             var coord = coords[i];
-            var direction = randomDirection(coord);
-            var nextCoord = coord + direction.toVector();
+            var nextCoord = randomCoordinate(coord);
             swapBalls(coord, nextCoord);
         }
     }
@@ -94,8 +100,17 @@ public class BallAreaController : MonoBehaviour {
         var second = balls[coord2.x, coord2.y];
         balls[coord1.x, coord1.y] = second;
         balls[coord2.x, coord2.y] = first;
-        first.setPosition(view.getBallPosition(coord2), coord2.x, coord2.y);
-        second.setPosition(view.getBallPosition(coord1), coord1.x, coord1.y);
+        first.setPosition(view.getBallPosition(coord2), coord2);
+        second.setPosition(view.getBallPosition(coord1), coord1);
+    }
+
+    Vector2Int randomCoordinate(Vector2Int initialCoord) {
+        var coord = new Vector2Int();
+        do {
+            coord.x = RandomUtils.nextInt(0, artSize.x);
+            coord.y = RandomUtils.nextInt(0, artSize.y);
+        } while (coord == initialCoord);
+        return coord;
     }
 
     Direction randomDirection(Vector2Int ballPosition) {
@@ -109,6 +124,16 @@ public class BallAreaController : MonoBehaviour {
             vector += ballPosition;
         } while (!xRange.includes(vector.x) || !yRange.includes(vector.y));
         return direction;
+    }
+
+    void resetBalls() {
+        for (var x = 0; x < artSize.x; x++) {
+            for (var y = 0; y < artSize.y; y++) {
+                var ball = balls[x, y];
+                ball.setPosition(view.getBallPosition(ball.initialPosition), ball.initialPosition);
+                balls[x, y] = ballsCopy[x, y];
+            }
+        }
     }
 
     public void shiftRow(int rowIndex, bool left) {

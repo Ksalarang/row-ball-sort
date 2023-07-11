@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using Utils;
 using Utils.Extensions;
 using utils.structs;
 using Zenject;
