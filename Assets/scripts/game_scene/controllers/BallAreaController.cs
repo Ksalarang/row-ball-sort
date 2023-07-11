@@ -40,8 +40,8 @@ public class BallAreaController : MonoBehaviour {
         initCoords();
         rowsSolved = new bool[artSize.y];
         createBalls();
-        testLabel.text = "";
-        // scrambleBalls();
+        scrambleBalls();
+        testLabel.text = "solve the art";
     }
 
     void createBalls() {
@@ -61,6 +61,7 @@ public class BallAreaController : MonoBehaviour {
                 ballsCopy[x, y] = ball;
             }
         }
+        for (var i = 0; i < rowsSolved.Length; i++) rowsSolved[i] = true;
     }
 
     void initCoords() {
@@ -82,6 +83,7 @@ public class BallAreaController : MonoBehaviour {
             for (var j = 0; j < shiftCount; j++) {
                 shiftRow(rowIndex, left);
             }
+            rowsSolved[rowIndex] = false;
         }
     }
 
@@ -92,7 +94,10 @@ public class BallAreaController : MonoBehaviour {
             var coord = coords[i];
             var nextCoord = randomCoordinate(coord);
             swapBalls(coord, nextCoord);
+            rowsSolved[coord.y] = false;
+            rowsSolved[nextCoord.y] = false;
         }
+        testLabel.text = "art is scrambled";
     }
 
     void swapBalls(Vector2Int coord1, Vector2Int coord2) {
@@ -134,6 +139,8 @@ public class BallAreaController : MonoBehaviour {
                 balls[x, y] = ballsCopy[x, y];
             }
         }
+        for (var i = 0; i < rowsSolved.Length; i++) rowsSolved[i] = true;
+        testLabel.text = "art is reset";
     }
 
     public void shiftRow(int rowIndex, bool left) {
@@ -165,22 +172,38 @@ public class BallAreaController : MonoBehaviour {
     public void checkIfComplete(int rowIndex) {
         checkRow(rowIndex);
         artSolved = rowsSolved.All(rowSolved => rowSolved);
-        testLabel.text = artSolved ? "art is solved" : "solving..";
-        if (artSolved) {
-            log.log("art is solved!");
-        }
+        testLabel.text = artSolved ? "art is solved!" : "solving..";
+        if (artSolved) log.log("art is solved");
     }
 
     void checkRow(int rowIndex) {
         var y = rowIndex;
         var complete = true;
         for (var x = 0; x < artSize.x; x++) {
-            if (balls[x, y].color != artView.getPixelColor(x, y)) {
-                complete = false;
-                break;
+            if (balls[x, y].color.approximately(artView.getPixelColor(x, y))) continue;
+            complete = false;
+            break;
+        }
+        rowsSolved[rowIndex] = complete;
+    }
+
+    public void onSwipe(bool up, int rowIndex, Vector3 position) {
+        var y = rowIndex;
+        var minDistance = float.MaxValue;
+        var ballIndex = 0;
+        for (int x = 0; x < artSize.x; x++) {
+            var ball = balls[x, y];
+            var distance = position.distanceTo(ball.position);
+            if (distance < minDistance) {
+                minDistance = distance;
+                ballIndex = x;
             }
         }
-        rowsSolved[y] = complete;
+        var nextRow = up ? rowIndex + 1 : rowIndex - 1;
+        if (nextRow < 0 || nextRow >= artSize.y) return;
+        var coord = new Vector2Int(ballIndex, rowIndex);
+        var nextCoord = new Vector2Int(ballIndex, nextRow);
+        swapBalls(coord, nextCoord);
     }
 }
 }

@@ -1,4 +1,5 @@
-﻿using game_scene.views;
+﻿using System;
+using game_scene.views;
 using UnityEngine;
 using Utils;
 using utils.structs;
@@ -11,12 +12,14 @@ public class BallInputController : MonoBehaviour {
     [Inject] new Camera camera;
     [Inject] BallAreaView ballAreaView;
     [Inject] BallAreaController ballAreaController;
+    [Inject] ArtView artView;
 
     Log log;
     bool isMobile;
     FloatRange heightRange;
     float rowHeight;
     float verticalOffset;
+    Vector2Int artSize;
     
     Vector3 startPosition;
     int rowIndex;
@@ -37,11 +40,17 @@ public class BallInputController : MonoBehaviour {
         heightRange = ballAreaView.getHeightRange();
         rowHeight = ballAreaView.getRowHeight();
         verticalOffset = Mathf.Abs(heightRange.min);
+        artSize = artView.getArtSizeInPixels();
     }
 
+    bool swipeDirectionDetermined;
+    bool swipeProcessed;
+    bool vertical;
+
     void Update() {
+        #region determine touch phase
         if (isMobile) {
-            if (Input.touchCount == 0) return;
+            if (Input.touchCount != 1) return;
             var touch = Input.GetTouch(0);
             phase = touch.phase;
             currentPosition = camera.ScreenToWorldPoint(touch.position);
@@ -64,29 +73,49 @@ public class BallInputController : MonoBehaviour {
                 touchedBefore = false;
             } else return;
         }
-        switch (phase) { 
+        #endregion
+        switch (phase) {
             case TouchPhase.Began:
                 startPosition = camera.ScreenToWorldPoint(Input.mousePosition);
                 startedTouchInArea = heightRange.min < startPosition.y && startPosition.y < heightRange.max;
                 if (!startedTouchInArea) return;
                 rowIndex = (int) ((startPosition.y + verticalOffset) / rowHeight);
+                rowIndex = Mathf.Clamp(rowIndex, 0, artSize.y - 1);
                 log.log($"start touch at row {rowIndex}");
                 break;
             case TouchPhase.Moved:
                 if (startedTouchInArea) {
-                    var delta = startPosition.x - currentPosition.x;
-                    if (Mathf.Abs(delta) > threshold) {
-                        var left = delta > 0;
-                        ballAreaController.shiftRow(rowIndex, left);
-                        startPosition = currentPosition;
-                        log.log($"shift row {rowIndex} " + (left ? "left" : "right"));
+                    var deltaX = startPosition.x - currentPosition.x;
+                    var deltaY = startPosition.y - currentPosition.y;
+                    if (!swipeDirectionDetermined) {
+                        vertical = Mathf.Abs(deltaY) > Mathf.Abs(deltaX);
+                        swipeDirectionDetermined = true;
+                    }
+                    switch (vertical) {
+                        case true when !swipeProcessed && Mathf.Abs(deltaY) > threshold: {
+                            var up = deltaY < 0;
+                            ballAreaController.onSwipe(up, rowIndex, startPosition);
+                            startPosition = currentPosition;
+                            swipeProcessed = true;
+                            log.log($"swipe " + (up ? "up" : "down"));
+                            break;
+                        }
+                        case false when Mathf.Abs(deltaX) > threshold: {
+                            var left = deltaX > 0;
+                            ballAreaController.shiftRow(rowIndex, left);
+                            startPosition = currentPosition;
+                            log.log($"shift row {rowIndex} " + (left ? "left" : "right"));
+                            break;
+                        }
                     }
                 }
                 break;
             case TouchPhase.Ended:
                 if (startedTouchInArea) {
-                    log.log($"end touch");
                     ballAreaController.checkIfComplete(rowIndex);
+                    swipeDirectionDetermined = false;
+                    swipeProcessed = false;
+                    log.log($"end touch");
                 }
                 break;
         }

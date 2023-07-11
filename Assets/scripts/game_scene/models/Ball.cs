@@ -7,6 +7,7 @@ public class Ball : MonoBehaviour {
     [HideInInspector] public Vector2Int initialPosition;
     
     public Vector2Int gridPosition { get; private set; }
+    public Vector3 position => transform.position;
 
     public Color color {
         get => spriteRenderer.color;
