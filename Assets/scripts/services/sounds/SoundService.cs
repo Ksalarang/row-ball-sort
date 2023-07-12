@@ -4,26 +4,30 @@ using UnityEngine;
 using Utils;
 using Utils.Extensions;
 using Zenject;
+using Object = UnityEngine.Object;
 
 namespace services.sounds {
 public class SoundService {
     readonly Log log;
     readonly AudioSources sources;
     readonly Dictionary<SoundId, Sound> sounds = new();
-    readonly GameObject soundContainer = new();
+    readonly GameObject soundContainer = new("sounds");
 
     [Inject]
     public SoundService(AudioSources sources) {
         log = new(GetType());
         this.sources = sources;
+        Object.DontDestroyOnLoad(soundContainer);
         initSounds();
     }
 
     void initSounds() {
         foreach (var sound in sources.sounds) {
-            var soundObject = new GameObject();
+            var soundObject = new GameObject(sound.id.ToString());
+            Object.DontDestroyOnLoad(soundObject);
             soundObject.transform.SetParent(soundContainer.transform);
             sound.audioSource = soundObject.AddComponent<AudioSource>();
+            sound.audioSource.playOnAwake = false;
             sound.audioSource.clip = sound.clip;
             sounds.Add(sound.id, sound);
         }
