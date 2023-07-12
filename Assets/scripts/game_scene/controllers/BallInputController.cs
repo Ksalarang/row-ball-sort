@@ -1,6 +1,7 @@
 ﻿using game_scene.models;
 using game_scene.views;
 using services.sounds;
+using services.vibrations;
 using UnityEngine;
 using Utils;
 using utils.structs;
@@ -14,6 +15,7 @@ public class BallInputController : MonoBehaviour {
     [Inject] ArtView artView;
     [Inject] InputSettings settings;
     [Inject] SoundService soundService;
+    [Inject] VibrationService vibrationService;
 
     Log log;
     bool isMobile;
@@ -105,6 +107,7 @@ public class BallInputController : MonoBehaviour {
                             startPosition = currentPosition;
                             swipeProcessed = true;
                             soundService.playSound(SoundId.BallSwipeClick);
+                            vibrationService.vibrate(VibrationType.Light);
                             log.log($"swipe " + (up ? "up" : "down"));
                             break;
                         }
@@ -113,6 +116,7 @@ public class BallInputController : MonoBehaviour {
                             ballAreaController.shiftRow(rowIndex, left);
                             startPosition = currentPosition;
                             soundService.playSound(SoundId.BallSwipeClick);
+                            vibrationService.vibrate(VibrationType.Light);
                             log.log($"shift row {rowIndex} " + (left ? "left" : "right"));
                             break;
                         }

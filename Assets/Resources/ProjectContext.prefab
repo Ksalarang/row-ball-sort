@@ -74,6 +74,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e4c4f9fe1d04d95a95253b417137050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  globalConfig:
+    logConfig:
+      sceneService: 0
+      soundService: 0
+      vibrationService: 1
   audioSources:
     sounds:
     - id: 0

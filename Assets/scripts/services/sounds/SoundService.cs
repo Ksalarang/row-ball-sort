@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using init_scene;
 using UnityEngine;
 using Utils;
 using Utils.Extensions;
@@ -14,8 +15,8 @@ public class SoundService {
     readonly GameObject soundContainer = new("sounds");
 
     [Inject]
-    public SoundService(AudioSources sources) {
-        log = new(GetType());
+    public SoundService(AudioSources sources, LogConfig logConfig) {
+        log = new(GetType(), logConfig.soundService);
         this.sources = sources;
         Object.DontDestroyOnLoad(soundContainer);
         initSounds();
