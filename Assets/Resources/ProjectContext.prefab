@@ -74,3 +74,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e4c4f9fe1d04d95a95253b417137050, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSources:
+    sounds:
+    - id: 0
+      clip: {fileID: 8300000, guid: e139db65ee8ed2e48acf8f837432341f, type: 3}
+      audioSource: {fileID: 0}

@@ -1,5 +1,6 @@
 ﻿using game_scene.models;
 using game_scene.views;
+using services.sounds;
 using UnityEngine;
 using Utils;
 using utils.structs;
@@ -12,6 +13,7 @@ public class BallInputController : MonoBehaviour {
     [Inject] BallAreaController ballAreaController;
     [Inject] ArtView artView;
     [Inject] InputSettings settings;
+    [Inject] SoundService soundService;
 
     Log log;
     bool isMobile;
@@ -102,6 +104,7 @@ public class BallInputController : MonoBehaviour {
                             ballAreaController.onSwipe(up, rowIndex, startPosition);
                             startPosition = currentPosition;
                             swipeProcessed = true;
+                            soundService.playSound(SoundId.BallSwipeClick);
                             log.log($"swipe " + (up ? "up" : "down"));
                             break;
                         }
@@ -109,6 +112,7 @@ public class BallInputController : MonoBehaviour {
                             var left = deltaX > 0;
                             ballAreaController.shiftRow(rowIndex, left);
                             startPosition = currentPosition;
+                            soundService.playSound(SoundId.BallSwipeClick);
                             log.log($"shift row {rowIndex} " + (left ? "left" : "right"));
                             break;
                         }
