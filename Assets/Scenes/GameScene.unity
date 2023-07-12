@@ -156,7 +156,7 @@ MonoBehaviour:
     scramblePercentage: 0.25
   inputSettings:
     verticalSwipeSensitivity: 0.8
-    horizontalSwipeSensitivity: 0.8
+    horizontalSwipeSensitivity: 0.6
   ballAreaSettings:
     distanceBetweenBalls: 0.02
 --- !u!4 &33482568
