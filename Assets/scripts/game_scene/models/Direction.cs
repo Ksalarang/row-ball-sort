@@ -27,5 +27,7 @@ public static class DirectionExtensions {
     }
 
     public static bool isVertical(this Direction direction) => direction is Direction.Up or Direction.Down;
+
+    public static bool isHorizontal(this Direction direction) => direction is Direction.Left or Direction.Right;
 }
 }

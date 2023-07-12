@@ -26,6 +26,11 @@ public static class TransformExtensions {
         var position = transform.position;
         transform.position = new Vector3(position.x, y, position.z);
     }
+    
+    public static void setZ(this Transform transform, float z) {
+        var position = transform.position;
+        transform.position = new Vector3(position.x, position.y, z);
+    }
 
     public static void fitIn(this Transform transform, Transform other) {
         var otherScale = other.localScale;

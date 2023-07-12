@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using game_scene.models;
 using game_scene.views;
 using TMPro;
@@ -18,6 +19,7 @@ public class BallAreaController : MonoBehaviour {
     [Inject(Id = UiElementId.ShuffleButton)] Button shuffleButton;
     [Inject(Id = UiElementId.ResetButton)] Button resetButton;
     [Inject] ArtScrambleSettings artScrambleSettings;
+    [Inject] BallAnimationSettings animationSettings;
 
     Log log;
     GameObject ballContainer;
@@ -28,6 +30,7 @@ public class BallAreaController : MonoBehaviour {
     bool[] rowsSolved;
     bool artSolved;
 
+    #region
     void Awake() {
         log = new(GetType());
         ballContainer = new("Balls");
@@ -74,6 +77,7 @@ public class BallAreaController : MonoBehaviour {
             }
         }
     }
+    #endregion
 
     void scrambleRows() {
         var halfWidth = artSize.x / 2;
@@ -104,11 +108,12 @@ public class BallAreaController : MonoBehaviour {
         testLabel.text = "art is scrambled";
     }
 
-    void swapBalls(Vector2Int coord1, Vector2Int coord2) {
+    void swapBalls(Vector2Int coord1, Vector2Int coord2, bool swapPositions = true) {
         var first = balls[coord1.x, coord1.y];
         var second = balls[coord2.x, coord2.y];
         balls[coord1.x, coord1.y] = second;
         balls[coord2.x, coord2.y] = first;
+        if (!swapPositions) return;
         first.setPosition(view.getBallPosition(coord2), coord2);
         second.setPosition(view.getBallPosition(coord1), coord1);
     }
@@ -173,14 +178,9 @@ public class BallAreaController : MonoBehaviour {
         }
     }
 
-    public void checkIfComplete(int rowIndex, Direction swipeDirection) {
+    void checkIfComplete(int rowIndex, int secondRowIndex = -1) {
         checkRow(rowIndex);
-        if (swipeDirection.isVertical()) {
-            var secondRowIndex = rowIndex + swipeDirection.toVector().y;
-            if (0 <= secondRowIndex && secondRowIndex < artSize.y) {
-                checkRow(secondRowIndex);
-            }
-        }
+        if (secondRowIndex != -1) checkRow(secondRowIndex);
         artSolved = rowsSolved.All(rowSolved => rowSolved);
         testLabel.text = artSolved ? "art is solved!" : "solving..";
         if (artSolved) log.log("art is solved");
@@ -198,22 +198,46 @@ public class BallAreaController : MonoBehaviour {
     }
 
     public void onSwipe(bool up, int rowIndex, Vector3 position) {
-        var y = rowIndex;
+        var nextRowIndex = up ? rowIndex + 1 : rowIndex - 1;
+        if (nextRowIndex < 0 || nextRowIndex >= artSize.y) return;
+        var coord = getClosestBallPositionTo(position, rowIndex);
+        var nextCoord = new Vector2Int(coord.x, nextRowIndex);
+        animateVerticalSwipe(coord, nextCoord, () => checkIfComplete(coord.y, nextCoord.y));
+    }
+
+    Vector2Int getClosestBallPositionTo(Vector3 position, int rowIndex) {
         var minDistance = float.MaxValue;
         var ballIndex = 0;
-        for (int x = 0; x < artSize.x; x++) {
-            var ball = balls[x, y];
+        for (var x = 0; x < artSize.x; x++) {
+            var ball = balls[x, rowIndex];
             var distance = position.distanceTo(ball.position);
             if (distance < minDistance) {
                 minDistance = distance;
                 ballIndex = x;
             }
         }
-        var nextRow = up ? rowIndex + 1 : rowIndex - 1;
-        if (nextRow < 0 || nextRow >= artSize.y) return;
-        var coord = new Vector2Int(ballIndex, rowIndex);
-        var nextCoord = new Vector2Int(ballIndex, nextRow);
-        swapBalls(coord, nextCoord);
+        return new Vector2Int(ballIndex, rowIndex);
+    }
+
+    public void onSwipeEnd(Direction swipeDirection, int rowIndex) {
+        if (swipeDirection.isHorizontal()) {
+            checkIfComplete(rowIndex);
+        }
+    }
+
+    void animateVerticalSwipe(Vector2Int coord1, Vector2Int coord2, Action action) {
+        var first = balls[coord1.x, coord1.y];
+        var second = balls[coord2.x, coord2.y];
+        var position1 = view.getBallPosition(coord1);
+        var position2 = view.getBallPosition(coord2);
+        var duration = animationSettings.verticalSwipeDuration;
+        first.transform.setZ(-1);
+        StartCoroutine(Coroutines.moveTo(first.transform, position2, duration, () => {
+            first.transform.setZ(0);
+            swapBalls(coord1, coord2, false);
+            action.Invoke();
+        }));
+        StartCoroutine(Coroutines.moveTo(second.transform, position1, duration));
     }
 }
 }

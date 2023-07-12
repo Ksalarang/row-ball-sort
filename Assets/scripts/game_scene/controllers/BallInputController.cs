@@ -121,7 +121,7 @@ public class BallInputController : MonoBehaviour {
                 break;
             case TouchPhase.Ended:
                 if (startedTouchInArea) {
-                    ballAreaController.checkIfComplete(rowIndex, swipeDirection);
+                    ballAreaController.onSwipeEnd(swipeDirection, rowIndex);
                     swipeDirectionDetermined = false;
                     swipeProcessed = false;
                     log.log($"end touch");

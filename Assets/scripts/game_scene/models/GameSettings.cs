@@ -5,6 +5,7 @@ namespace game_scene.models {
 public class GameSettings : MonoBehaviour {
     public ArtScrambleSettings artScrambleSettings;
     public InputSettings inputSettings;
+    public BallAnimationSettings ballAnimationSettings;
     public BallAreaSettings ballAreaSettings;
 }
 
@@ -17,6 +18,11 @@ public struct ArtScrambleSettings {
 public struct InputSettings {
     [Range(0.1f, 1f)] public float verticalSwipeSensitivity;
     [Range(0.1f, 1f)] public float horizontalSwipeSensitivity;
+}
+
+[Serializable]
+public struct BallAnimationSettings {
+    public float verticalSwipeDuration;
 }
 
 [Serializable]

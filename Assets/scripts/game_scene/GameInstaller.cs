@@ -52,6 +52,7 @@ public class GameInstaller : MonoInstaller {
         bind(gameSettings);
         bind(gameSettings.artScrambleSettings);
         bind(gameSettings.inputSettings);
+        bind(gameSettings.ballAnimationSettings);
         bind(gameSettings.ballAreaSettings);
     }
     
