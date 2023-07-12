@@ -93,6 +93,10 @@ public class BallAreaController : MonoBehaviour {
         for (var i = 0; i < scrambleAmount; i++) {
             var coord = coords[i];
             var nextCoord = randomCoordinate(coord);
+            if (balls[coord.x, coord.y].color.approximately(balls[nextCoord.x, nextCoord.y].color)) {
+                scrambleAmount++;
+                continue;
+            }
             swapBalls(coord, nextCoord);
             rowsSolved[coord.y] = false;
             rowsSolved[nextCoord.y] = false;
