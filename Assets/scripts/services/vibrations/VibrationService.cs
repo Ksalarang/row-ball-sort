@@ -34,12 +34,12 @@ public class VibrationService {
 
     void vibrate(long milliseconds) {
         if (isAndroid) vibrator.Call("vibrate", milliseconds);
-        else Handheld.Vibrate();
+        // else Handheld.Vibrate();
     }
 
     void vibrate(long[] pattern, int repeat) {
         if (isAndroid) vibrator.Call("vibrate", pattern, repeat);
-        else Handheld.Vibrate();
+        // else Handheld.Vibrate();
     }
 
     void cancel() {
@@ -51,6 +51,10 @@ public class VibrationService {
             VibrationType.Light => 10,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
+    }
+
+    void doNotCallThisMethod() {
+        Handheld.Vibrate(); // for vibration permission
     }
 }
 

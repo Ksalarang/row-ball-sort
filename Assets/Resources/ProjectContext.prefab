@@ -78,7 +78,7 @@ MonoBehaviour:
     logConfig:
       sceneService: 0
       soundService: 0
-      vibrationService: 1
+      vibrationService: 0
   audioSources:
     sounds:
     - id: 0

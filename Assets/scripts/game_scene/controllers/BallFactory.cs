@@ -7,8 +7,9 @@ public class BallFactory : MonoBehaviour {
     [Inject(Id = PrefabId.Ball)] GameObject ballPrefab;
     [Inject] DiContainer container;
 
-    public Ball create() {
+    public Ball create(string name = "ball") {
         var ball = container.InstantiatePrefabForComponent<Ball>(ballPrefab);
+        ball.name = name;
         return ball;
     }
 }

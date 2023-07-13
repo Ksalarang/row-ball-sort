@@ -32,6 +32,10 @@ public static class TransformExtensions {
         transform.position = new Vector3(position.x, position.y, z);
     }
 
+    public static float getMinX(this Transform transform) => transform.position.x - transform.localScale.x / 2;
+    
+    public static float getMaxX(this Transform transform) => transform.position.x + transform.localScale.x / 2;
+
     public static void fitIn(this Transform transform, Transform other) {
         var otherScale = other.localScale;
         var scale = Mathf.Min(otherScale.x, otherScale.y);

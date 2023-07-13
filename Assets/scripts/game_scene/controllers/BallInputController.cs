@@ -49,6 +49,7 @@ public class BallInputController : MonoBehaviour {
     bool swipeDirectionDetermined;
     bool swipeProcessed;
     bool vertical;
+    bool moved;
     Direction swipeDirection;
 
     void Update() {
@@ -89,35 +90,32 @@ public class BallInputController : MonoBehaviour {
                 break;
             case TouchPhase.Moved:
                 if (startedTouchInArea) {
-                    var deltaX = startPosition.x - currentPosition.x;
+                    moved = true;
+                    var deltaX = currentPosition.x - startPosition.x;
                     var deltaY = startPosition.y - currentPosition.y;
                     if (!swipeDirectionDetermined) {
                         vertical = Mathf.Abs(deltaY) > Mathf.Abs(deltaX);
                         if (vertical) {
                             swipeDirection = deltaY < 0 ? Direction.Up : Direction.Down;
                         } else {
-                            swipeDirection = deltaX > 0 ? Direction.Left : Direction.Right;
+                            swipeDirection = deltaX < 0 ? Direction.Left : Direction.Right;
                         }
                         swipeDirectionDetermined = true;
                     }
                     switch (vertical) {
                         case true when !swipeProcessed && Mathf.Abs(deltaY) > 1 - settings.verticalSwipeSensitivity: {
                             var up = deltaY < 0;
-                            ballAreaController.onSwipe(up, rowIndex, startPosition);
+                            ballAreaController.onVerticalSwipe(up, rowIndex, startPosition);
                             startPosition = currentPosition;
                             swipeProcessed = true;
-                            soundService.playSound(SoundId.BallSwipeClick);
-                            vibrationService.vibrate(VibrationType.Light);
                             log.log($"swipe " + (up ? "up" : "down"));
                             break;
                         }
-                        case false when Mathf.Abs(deltaX) > 1 - settings.horizontalSwipeSensitivity: {
-                            var left = deltaX > 0;
-                            ballAreaController.shiftRow(rowIndex, left);
+                        case false: {
+                            ballAreaController.onHorizontalShift(rowIndex, deltaX);
                             startPosition = currentPosition;
-                            soundService.playSound(SoundId.BallSwipeClick);
-                            vibrationService.vibrate(VibrationType.Light);
-                            log.log($"shift row {rowIndex} " + (left ? "left" : "right"));
+                            var left = deltaX < 0;
+                            log.log($"shift row {rowIndex} to the " + (left ? "left" : "right"));
                             break;
                         }
                     }
@@ -125,9 +123,8 @@ public class BallInputController : MonoBehaviour {
                 break;
             case TouchPhase.Ended:
                 if (startedTouchInArea) {
-                    ballAreaController.onSwipeEnd(swipeDirection, rowIndex);
-                    swipeDirectionDetermined = false;
-                    swipeProcessed = false;
+                    if (moved) ballAreaController.onSwipeEnd(swipeDirection, rowIndex);
+                    swipeDirectionDetermined = swipeProcessed = moved = false;
                     log.log($"end touch");
                 }
                 break;

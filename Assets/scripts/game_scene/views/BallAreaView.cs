@@ -15,18 +15,20 @@ public class BallAreaView : MonoBehaviour {
     Vector2Int artSize;
     Rect ballAreaRect;
     Vector3 ballSize;
-    float step;
     Vector3 bottomLeft;
+
+    public float step { get; private set; }
+    public FloatRange widthRange { get; private set; }
     
     public void onArtDataReady() {
         artSize = artView.getArtSizeInPixels();
         ballAreaRect = ballAreaImage.rectTransform.getWorldRect();
-        // Debug.Log($"ball area: {ballAreaRect}");
-        var ballWidth = (ballAreaRect.width - (artSize.x + 1) * settings.distanceBetweenBalls) / artSize.x;
+        var ballWidth = (ballAreaRect.width - artSize.x * settings.distanceBetweenBalls) / artSize.x;
         ballSize = new Vector3(ballWidth, ballWidth);
         step = ballWidth + settings.distanceBetweenBalls;
-        var offset = settings.distanceBetweenBalls + ballWidth / 2;
+        var offset = settings.distanceBetweenBalls / 2 + ballWidth / 2;
         bottomLeft = new Vector3(ballAreaRect.x + offset, ballAreaRect.y + offset);
+        widthRange = new FloatRange(ballAreaRect.xMin, ballAreaRect.xMax);
     }
     
     public Vector3 getBallSize() => ballSize;
