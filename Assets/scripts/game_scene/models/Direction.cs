@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 namespace game_scene.models {
 public enum Direction {

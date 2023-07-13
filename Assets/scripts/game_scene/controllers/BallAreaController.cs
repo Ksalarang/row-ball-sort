@@ -5,7 +5,6 @@ using game_scene.views;
 using services.sounds;
 using services.vibrations;
 using TMPro;
-using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils;
