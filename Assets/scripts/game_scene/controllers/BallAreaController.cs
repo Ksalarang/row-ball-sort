@@ -5,6 +5,7 @@ using game_scene.views;
 using services.sounds;
 using services.vibrations;
 using TMPro;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils;
@@ -22,6 +23,7 @@ public class BallAreaController : MonoBehaviour {
     [Inject(Id = UiElementId.ResetButton)] Button resetButton;
     [Inject] ArtScrambleSettings artScrambleSettings;
     [Inject] BallAnimationSettings animationSettings;
+    [Inject] BallAreaSettings settings;
     [Inject] SoundService soundService;
     [Inject] VibrationService vibrationService;
 
@@ -38,7 +40,7 @@ public class BallAreaController : MonoBehaviour {
 
     #region
     void Awake() {
-        log = new(GetType(), false);
+        log = new(GetType(), true);
         ballContainer = new("Balls");
         shuffleButton.onClick.AddListener(scrambleBalls);
         resetButton.onClick.AddListener(resetBalls);
@@ -209,6 +211,10 @@ public class BallAreaController : MonoBehaviour {
     }
 
     public void onHorizontalShift(int rowIndex, float deltaX) {
+        var maxDeltaX = view.getBallSize().x / 2 + settings.distanceBetweenBalls / 2;
+        if (Mathf.Abs(deltaX) > maxDeltaX) {
+            deltaX = maxDeltaX * Mathf.Sign(deltaX);
+        }
         for (var x = 0; x < artSize.x; x++) {
             var ball = balls[x, rowIndex];
             ball.transform.Translate(deltaX, 0, 0);
