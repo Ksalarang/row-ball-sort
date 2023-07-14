@@ -12,9 +12,13 @@ public class SoundService {
     readonly Log log;
     readonly AudioSources sources;
     readonly Dictionary<SoundId, Sound> sounds = new();
-    readonly Dictionary<SoundTrackId, SoundTrack> soundtracks = new();
+    readonly Dictionary<SoundTrackId, Soundtrack> soundtracks = new();
     readonly GameObject soundContainer = new("sounds");
-    readonly GameObject soundtrackContainer = new("tracks");
+    readonly GameObject soundtrackContainer = new("soundtracks");
+    
+    float soundVolume = 1;
+    float musicVolume = 1;
+    Soundtrack currentSoundtrack;
 
     [Inject]
     public SoundService(AudioSources sources, LogConfig logConfig) {
@@ -23,7 +27,7 @@ public class SoundService {
         Object.DontDestroyOnLoad(soundContainer);
         Object.DontDestroyOnLoad(soundtrackContainer);
         initSounds();
-        initSoundTracks();
+        initSoundtracks();
     }
 
     void initSounds() {
@@ -39,7 +43,7 @@ public class SoundService {
         log.log($"init sounds: {sounds.Values.toString()}");
     }
 
-    void initSoundTracks() {
+    void initSoundtracks() {
         foreach (var soundtrack in sources.soundtracks) {
             var soundtrackObject = new GameObject(soundtrack.id.ToString());
             Object.DontDestroyOnLoad(soundtrackObject);
@@ -54,13 +58,14 @@ public class SoundService {
 
     public void playSound(SoundId id) {
         var sound = sounds[id];
-        sound.play();
+        sound.play(soundVolume);
         log.log($"play {sound}");
     }
 
     public void playSoundtrack(SoundTrackId id) {
         var soundtrack = soundtracks[id];
-        soundtrack.play();
+        soundtrack.play(musicVolume, true);
+        currentSoundtrack = soundtrack;
         log.log($"play {soundtrack}");
     }
 
@@ -69,43 +74,66 @@ public class SoundService {
         soundtrack.stop();
         log.log($"stop {soundtrack}");
     }
+
+    public void setSoundVolume(float value) => soundVolume = value;
+
+    public float getSoundVolume() => soundVolume;
+
+    public void setMusicVolume(float value) {
+        musicVolume = value;
+        if (currentSoundtrack != null) currentSoundtrack.volume = value;
+    }
+
+    public float getMusicVolume() => musicVolume;
 }
 
 [Serializable]
 public class AudioSources {
     public Sound[] sounds;
-    public SoundTrack[] soundtracks;
+    public Soundtrack[] soundtracks;
 }
 
 [Serializable]
-public class Sound {
+public class Sound : Audio {
     public SoundId id;
-    public AudioClip clip;
-    [HideInInspector] public AudioSource audioSource;
 
-    public void play() {
-        audioSource.PlayOneShot(audioSource.clip);
+    public void play(float volume) {
+        playOneShot(volume);
     }
 
     public override string ToString() => $"sound {id}";
 }
 
 [Serializable]
-public class SoundTrack {
+public class Soundtrack : Audio {
     public SoundTrackId id;
+
+    public override string ToString() => $"soundtrack {id}";
+}
+
+public abstract class Audio {
     public AudioClip clip;
     [HideInInspector] public AudioSource audioSource;
 
-    public void play(bool loop = true) {
+    public float volume {
+        get => audioSource.volume;
+        set => audioSource.volume = value;
+    }
+
+    public void play(float volume, bool loop) {
+        audioSource.volume = volume;
         audioSource.loop = loop;
         audioSource.Play();
     }
-
+    
+    protected void playOneShot(float volume) {
+        audioSource.volume = volume;
+        audioSource.PlayOneShot(clip);
+    }
+    
     public void stop() {
         audioSource.Stop();
     }
-
-    public override string ToString() => $"soundtrack {id}";
 }
 
 public enum SoundId {
