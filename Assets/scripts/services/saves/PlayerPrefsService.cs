@@ -1,12 +1,18 @@
+using init_scene;
 using UnityEngine;
+using Utils;
 using Utils.Extensions;
 using utils.interfaces;
+using Zenject;
 
 namespace services.saves {
 public class PlayerPrefsService : Service, AppLifecycleListener {
+    readonly Log log;
     readonly PlayerPrefsData prefs;
 
-    public PlayerPrefsService() {
+    [Inject]
+    public PlayerPrefsService(LogConfig logConfig) {
+        log = new(GetType(), logConfig.playerPrefsService);
         prefs = new PlayerPrefsData {
             audio = new AudioPrefs {
                 soundVolume = PlayerPrefs.GetFloat(Keys.SoundVolume, 1f),
@@ -14,15 +20,25 @@ public class PlayerPrefsService : Service, AppLifecycleListener {
                 vibrationEnabled = PlayerPrefsExt.getBool(Keys.VibrationEnabled, true),
             },
         };
+        log.log($"init");
     }
 
     public PlayerPrefsData getPrefs() => prefs;
 
+    public void onPause() {
+        savePrefs();
+    }
+
     public void onQuit() {
+        savePrefs();
+    }
+
+    void savePrefs() {
         PlayerPrefs.SetFloat(Keys.SoundVolume, prefs.audio.soundVolume);
         PlayerPrefs.SetFloat(Keys.MusicVolume, prefs.audio.musicVolume);
         PlayerPrefsExt.setBool(Keys.VibrationEnabled, prefs.audio.vibrationEnabled);
         PlayerPrefs.Save();
+        log.log("save prefs");
     }
 
     static class Keys {

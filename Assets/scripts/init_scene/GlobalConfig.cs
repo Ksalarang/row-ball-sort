@@ -8,8 +8,10 @@ public class GlobalConfig {
 
 [Serializable]
 public struct LogConfig {
+    public bool serviceManager;
     public bool sceneService;
     public bool soundService;
     public bool vibrationService;
+    public bool playerPrefsService;
 }
 }
