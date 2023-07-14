@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using init_scene;
+using services.saves;
 using UnityEngine;
 using Utils;
 using Utils.Extensions;
@@ -8,16 +9,15 @@ using Zenject;
 using Object = UnityEngine.Object;
 
 namespace services.sounds {
-public class SoundService {
+public class SoundService: Service, PlayerPrefsLoadListener {
     readonly Log log;
     readonly AudioSources sources;
     readonly Dictionary<SoundId, Sound> sounds = new();
     readonly Dictionary<SoundTrackId, Soundtrack> soundtracks = new();
     readonly GameObject soundContainer = new("sounds");
     readonly GameObject soundtrackContainer = new("soundtracks");
-    
-    float soundVolume = 1;
-    float musicVolume = 1;
+
+    AudioPrefs prefs;
     Soundtrack currentSoundtrack;
 
     [Inject]
@@ -56,15 +56,19 @@ public class SoundService {
         log.log($"init soundtracks: {soundtracks.Values.toString()}");
     }
 
+    public void onPrefsLoaded(PlayerPrefsData prefs) {
+        this.prefs = prefs.audio;
+    }
+
     public void playSound(SoundId id) {
         var sound = sounds[id];
-        sound.play(soundVolume);
+        sound.play(prefs.soundVolume);
         log.log($"play {sound}");
     }
 
     public void playSoundtrack(SoundTrackId id) {
         var soundtrack = soundtracks[id];
-        soundtrack.play(musicVolume, true);
+        soundtrack.play(prefs.musicVolume, true);
         currentSoundtrack = soundtrack;
         log.log($"play {soundtrack}");
     }
@@ -75,16 +79,16 @@ public class SoundService {
         log.log($"stop {soundtrack}");
     }
 
-    public void setSoundVolume(float value) => soundVolume = value;
+    public void setSoundVolume(float value) => prefs.soundVolume = value;
 
-    public float getSoundVolume() => soundVolume;
+    public float getSoundVolume() => prefs.soundVolume;
 
     public void setMusicVolume(float value) {
-        musicVolume = value;
+        prefs.musicVolume = value;
         if (currentSoundtrack != null) currentSoundtrack.volume = value;
     }
 
-    public float getMusicVolume() => musicVolume;
+    public float getMusicVolume() => prefs.musicVolume;
 }
 
 [Serializable]

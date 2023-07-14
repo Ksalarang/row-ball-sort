@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1920506560792582077}
   - component: {fileID: 579454189975237092}
   - component: {fileID: 6706312956047703229}
+  - component: {fileID: -3826300125463054620}
   m_Layer: 0
   m_Name: ProjectContext
   m_TagString: Untagged
@@ -77,14 +78,27 @@ MonoBehaviour:
   globalConfig:
     logConfig:
       sceneService: 0
-      soundService: 1
+      soundService: 0
       vibrationService: 0
   audioSources:
     sounds:
-    - id: 0
-      clip: {fileID: 8300000, guid: e139db65ee8ed2e48acf8f837432341f, type: 3}
+    - clip: {fileID: 8300000, guid: e139db65ee8ed2e48acf8f837432341f, type: 3}
       audioSource: {fileID: 0}
+      id: 0
     soundtracks:
-    - id: 0
-      clip: {fileID: 8300000, guid: 5eebb1c0688d2dd44882b403f8a7e8ab, type: 3}
+    - clip: {fileID: 8300000, guid: 5eebb1c0688d2dd44882b403f8a7e8ab, type: 3}
       audioSource: {fileID: 0}
+      id: 0
+  serviceManager: {fileID: -3826300125463054620}
+--- !u!114 &-3826300125463054620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5669707208100890657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5114884613f4f3fbf2d49f07e50a533, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

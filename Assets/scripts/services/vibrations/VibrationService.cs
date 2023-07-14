@@ -5,7 +5,7 @@ using Utils;
 using Zenject;
 
 namespace services.vibrations {
-public class VibrationService {
+public class VibrationService : Service {
 
 #if UNITY_ANDROID && !UNITY_EDITOR
     static AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");

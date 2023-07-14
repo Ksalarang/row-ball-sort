@@ -1,4 +1,6 @@
-﻿using services.scenes;
+﻿using services;
+using services.saves;
+using services.scenes;
 using services.sounds;
 using services.vibrations;
 using UnityEngine;
@@ -10,6 +12,7 @@ namespace init_scene {
 public class ServiceInstaller : MonoInstaller {
     [SerializeField] GlobalConfig globalConfig;
     [SerializeField] AudioSources audioSources;
+    [SerializeField] ServiceManager serviceManager;
     
     public override void InstallBindings() {
         // settings
@@ -20,6 +23,9 @@ public class ServiceInstaller : MonoInstaller {
         bind<SceneService, SimpleSceneService>();
         bind<SoundService>();
         bind<VibrationService>();
+        bind<PlayerPrefsService>();
+        // service manager
+        bind(serviceManager);
     }
 
     void bind<T>(T instance) {
