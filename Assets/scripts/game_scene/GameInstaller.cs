@@ -1,6 +1,7 @@
 using game_scene.controllers;
 using game_scene.models;
 using game_scene.views;
+using game_scene.windows;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,6 +23,10 @@ public class GameInstaller : MonoInstaller {
     [SerializeField] TMP_Text testLabel;
     [SerializeField] Button shuffleButton;
     [SerializeField] Button resetButton;
+    [SerializeField] Button settingsButton;
+    [Header("Windows")] 
+    [SerializeField] SettingsController settingsController;
+    [SerializeField] SettingsView settingsView;
     [Header("Prefabs")]
     [SerializeField] GameObject ballPrefab;
     [Header("Misc")]
@@ -43,6 +48,10 @@ public class GameInstaller : MonoInstaller {
         bind(testLabel, UiElementId.TestLabel);
         bind(shuffleButton, UiElementId.ShuffleButton);
         bind(resetButton, UiElementId.ResetButton);
+        bind(settingsButton, UiElementId.SettingsButton);
+        // windows
+        bind(settingsController);
+        bind(settingsView);
         // prefabs
         bind(ballPrefab, PrefabId.Ball);
         // misc
@@ -77,6 +86,7 @@ public enum UiElementId {
     TestLabel,
     ShuffleButton,
     ResetButton,
+    SettingsButton,
 }
 
 public enum PrefabId {
