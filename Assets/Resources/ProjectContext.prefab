@@ -77,10 +77,14 @@ MonoBehaviour:
   globalConfig:
     logConfig:
       sceneService: 0
-      soundService: 0
+      soundService: 1
       vibrationService: 0
   audioSources:
     sounds:
     - id: 0
       clip: {fileID: 8300000, guid: e139db65ee8ed2e48acf8f837432341f, type: 3}
+      audioSource: {fileID: 0}
+    soundtracks:
+    - id: 0
+      clip: {fileID: 8300000, guid: 5eebb1c0688d2dd44882b403f8a7e8ab, type: 3}
       audioSource: {fileID: 0}

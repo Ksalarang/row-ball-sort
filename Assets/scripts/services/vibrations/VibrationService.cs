@@ -48,7 +48,7 @@ public class VibrationService {
 
     long getVibrationDuration(VibrationType type) {
         return type switch {
-            VibrationType.Light => 10,
+            VibrationType.Light => 25,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }

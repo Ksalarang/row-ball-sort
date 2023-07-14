@@ -1,11 +1,11 @@
-﻿using game_scene.controllers;
+﻿using services.sounds;
 using UnityEngine;
 using Utils;
 using Zenject;
 
 namespace game_scene {
 public class GameController : MonoBehaviour {
-    [Inject] BallFactory ballFactory;
+    [Inject] SoundService soundService;
     
     Log log;
 
@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour {
 
     void Start() {
         log.log("start");
+        soundService.playSoundtrack(SoundTrackId.Background);
     }
 }
 }
