@@ -17,8 +17,8 @@ public class PlayerPrefsService : Service, AppLifecycleListener {
             audio = new AudioPrefs {
                 soundVolume = PlayerPrefs.GetFloat(Keys.SoundVolume, 1f),
                 musicVolume = PlayerPrefs.GetFloat(Keys.MusicVolume, 1f),
-                vibrationEnabled = PlayerPrefsExt.getBool(Keys.VibrationEnabled, true),
             },
+            vibrationEnabled = PlayerPrefsExt.getBool(Keys.VibrationEnabled, true),
         };
         log.log($"init");
     }
@@ -36,7 +36,7 @@ public class PlayerPrefsService : Service, AppLifecycleListener {
     void savePrefs() {
         PlayerPrefs.SetFloat(Keys.SoundVolume, prefs.audio.soundVolume);
         PlayerPrefs.SetFloat(Keys.MusicVolume, prefs.audio.musicVolume);
-        PlayerPrefsExt.setBool(Keys.VibrationEnabled, prefs.audio.vibrationEnabled);
+        PlayerPrefsExt.setBool(Keys.VibrationEnabled, prefs.vibrationEnabled);
         PlayerPrefs.Save();
         log.log("save prefs");
     }
@@ -50,11 +50,11 @@ public class PlayerPrefsService : Service, AppLifecycleListener {
 
 public class PlayerPrefsData {
     public AudioPrefs audio;
+    public bool vibrationEnabled;
 }
 
 public class AudioPrefs {
     public float soundVolume;
     public float musicVolume;
-    public bool vibrationEnabled;
 }
 }

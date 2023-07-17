@@ -1,4 +1,5 @@
 ﻿using services.sounds;
+using services.vibrations;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils.MVC;
@@ -9,8 +10,12 @@ public class SettingsView : View {
     [SerializeField] Button closeButton;
     [SerializeField] Slider soundSlider;
     [SerializeField] Slider musicSlider;
+    [SerializeField] Slider vibrationSlider;
+    [SerializeField] GameObject vibrationContainer;
 
     [Inject] SoundService soundService;
+
+    [Inject] VibrationService vibrationService;
 
     void Awake() {
         closeButton.onClick.AddListener(animateHide);
@@ -18,6 +23,12 @@ public class SettingsView : View {
         musicSlider.onValueChanged.AddListener(onMusicVolumeChanged);
         soundSlider.value = soundService.getSoundVolume();
         musicSlider.value = soundService.getMusicVolume();
+        if (vibrationService.supportsVibration()) {
+            vibrationSlider.onValueChanged.AddListener(onVibrationValueChanged);
+            vibrationSlider.value = vibrationService.isVibrationEnabled() ? 1 : 0;
+        } else {
+            vibrationContainer.SetActive(false);
+        }
     }
 
     void onSoundVolumeChanged(float value) {
@@ -26,6 +37,10 @@ public class SettingsView : View {
 
     void onMusicVolumeChanged(float value) {
         soundService.setMusicVolume(value);
+    }
+
+    void onVibrationValueChanged(float value) {
+        vibrationService.setVibrationEnabled(value == 1);
     }
 
     public void animateShow() {

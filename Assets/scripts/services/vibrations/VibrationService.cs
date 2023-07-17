@@ -1,11 +1,12 @@
 ﻿using System;
 using init_scene;
+using services.saves;
 using UnityEngine;
 using Utils;
 using Zenject;
 
 namespace services.vibrations {
-public class VibrationService : Service {
+public class VibrationService : Service, PlayerPrefsLoadListener {
 
 #if UNITY_ANDROID && !UNITY_EDITOR
     static AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
@@ -20,6 +21,7 @@ public class VibrationService : Service {
 #endif
     
     readonly Log log;
+    PlayerPrefsData prefs;
 
     [Inject]
     public VibrationService(LogConfig logConfig) {
@@ -27,10 +29,23 @@ public class VibrationService : Service {
         log.log("create");
     }
 
+    public void onPrefsLoaded(PlayerPrefsData prefs) {
+        this.prefs = prefs;
+    }
+
     public void vibrate(VibrationType type) {
+        if (!prefs.vibrationEnabled) return;
         log.log($"vibrate: {type}");
         vibrate(getVibrationDuration(type));
     }
+    
+    public void setVibrationEnabled(bool enabled) {
+        prefs.vibrationEnabled = enabled;
+    }
+
+    public bool isVibrationEnabled() => prefs.vibrationEnabled;
+
+    public bool supportsVibration() => SystemInfo.supportsVibration;
 
     void vibrate(long milliseconds) {
         if (isAndroid) vibrator.Call("vibrate", milliseconds);
