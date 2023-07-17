@@ -34,6 +34,8 @@ public class BallInputController : MonoBehaviour {
     Vector3 prevPosition;
     Vector3 currentPosition;
 
+    public bool paused;
+
     void Awake() {
         log = new(GetType(), false);
         isMobile = Application.isMobilePlatform;
@@ -53,6 +55,7 @@ public class BallInputController : MonoBehaviour {
     Direction swipeDirection;
 
     void Update() {
+        if (paused) return;
         #region determine touch phase
         if (isMobile) {
             if (Input.touchCount != 1) return;

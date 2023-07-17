@@ -14,7 +14,6 @@ public class SettingsView : View {
     [SerializeField] GameObject vibrationContainer;
 
     [Inject] SoundService soundService;
-
     [Inject] VibrationService vibrationService;
 
     void Awake() {

@@ -7,6 +7,8 @@ public abstract class View : MonoBehaviour, AlphaAdjustable {
     protected const float FadeDuration = 0.2f;
     [SerializeField] protected CanvasGroup canvasGroup;
 
+    public Action onHideAction;
+
     public float alpha {
         get => canvasGroup.alpha;
         set => canvasGroup.alpha = value;
@@ -18,6 +20,8 @@ public abstract class View : MonoBehaviour, AlphaAdjustable {
 
     public void hide() {
         gameObject.SetActive(false);
+        onHideAction?.Invoke();
+        onHideAction = null;
     }
 
     protected virtual void show(float duration, Action action = null) {
