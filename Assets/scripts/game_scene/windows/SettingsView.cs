@@ -39,7 +39,12 @@ public class SettingsView : View {
     }
 
     void onVibrationValueChanged(float value) {
-        vibrationService.setVibrationEnabled(value == 1);
+        if (value == 1) {
+            vibrationService.setVibrationEnabled(true);
+            vibrationService.vibrate(VibrationType.Light);
+        } else {
+            vibrationService.setVibrationEnabled(false);
+        }
     }
 
     public void animateShow() {
