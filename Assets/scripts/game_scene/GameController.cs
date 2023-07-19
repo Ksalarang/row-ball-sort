@@ -8,6 +8,8 @@ using Zenject;
 
 namespace game_scene {
 public class GameController : MonoBehaviour {
+    [SerializeField] [Range(0f, 10f)] float timeScale;
+    
     [Inject] SoundService soundService;
     [Inject(Id = UiElementId.SettingsButton)] Button settingsButton;
     [Inject] SettingsController settingsController;
@@ -28,6 +30,10 @@ public class GameController : MonoBehaviour {
     void Start() {
         log.log("start");
         soundService.playSoundtrack(SoundTrackId.Background);
+    }
+
+    void Update() {
+        Time.timeScale = timeScale;
     }
 }
 }

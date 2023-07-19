@@ -267,9 +267,8 @@ public class BallAreaController : MonoBehaviour {
             StartCoroutine(Coroutines.moveTo(leftEdgeBall.transform, leftEndPosition, duration));
             var lastBallPosition = view.getBallPosition(artSize.x - 1, rowIndex);
             var rightEndPosition = new Vector3(lastBallPosition.x + view.step, lastBallPosition.y);
-            StartCoroutine(Coroutines.moveTo(rightEdgeBall.transform, rightEndPosition, duration, () => {
-                checkIfComplete(rowIndex);
-            }));
+            StartCoroutine(Coroutines.moveTo(rightEdgeBall.transform, rightEndPosition, duration, Interpolation.Linear, 
+                () => checkIfComplete(rowIndex)));
         }
     }
 
@@ -278,14 +277,19 @@ public class BallAreaController : MonoBehaviour {
         var second = balls[coord2.x, coord2.y];
         var position1 = view.getBallPosition(coord1);
         var position2 = view.getBallPosition(coord2);
+        var firstTransform = first.transform;
+        var secondTransform = second.transform;
         var duration = animationSettings.verticalSwipeDuration;
-        first.transform.setZ(-1);
-        StartCoroutine(Coroutines.moveTo(first.transform, position2, duration, () => {
-            first.transform.setZ(0);
+        firstTransform.setZ(-1);
+        StartCoroutine(Coroutines.moveTo(firstTransform, position2, duration, Interpolation.AccelerateDecelerate, 
+            () => {
+            firstTransform.setZ(0);
             swapBalls(coord1, coord2, false);
             action.Invoke();
         }));
-        StartCoroutine(Coroutines.moveTo(second.transform, position1, duration));
+        StartCoroutine(Coroutines.scaleToAndBack(firstTransform, firstTransform.localScale * 1.2f, duration, false));
+        StartCoroutine(Coroutines.moveTo(secondTransform, position1, duration, Interpolation.AccelerateDecelerate));
+        StartCoroutine(Coroutines.scaleToAndBack(secondTransform, secondTransform.localScale * 0.8f, duration, false));
     }
     #endregion
 

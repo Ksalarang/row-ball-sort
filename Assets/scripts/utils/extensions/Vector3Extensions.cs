@@ -18,6 +18,14 @@ public static class Vector3Extensions {
         return Mathf.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
     }
 
+    public static Vector3 midPoint(this Vector3 vector, Vector3 other) {
+        return new Vector3(
+            (vector.x + other.x) / 2,
+            (vector.y + other.y) / 2,
+            (vector.z + other.z) / 2
+        );
+    }
+
     /// <summary>
     /// Return a vector populated with the minimum value of this vector.
     /// </summary>
