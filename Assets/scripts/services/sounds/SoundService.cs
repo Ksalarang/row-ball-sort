@@ -9,15 +9,15 @@ using Zenject;
 using Object = UnityEngine.Object;
 
 namespace services.sounds {
-public class SoundService: Service, PlayerPrefsLoadListener {
+public class SoundService: Service, SaveLoadListener {
     readonly Log log;
     readonly AudioSources sources;
     readonly Dictionary<SoundId, Sound> sounds = new();
-    readonly Dictionary<SoundTrackId, Soundtrack> soundtracks = new();
+    readonly Dictionary<SoundtrackId, Soundtrack> soundtracks = new();
     readonly GameObject soundContainer = new("sounds");
     readonly GameObject soundtrackContainer = new("soundtracks");
 
-    AudioPrefs prefs;
+    AudioSave save;
     Soundtrack currentSoundtrack;
 
     [Inject]
@@ -56,39 +56,39 @@ public class SoundService: Service, PlayerPrefsLoadListener {
         log.log($"init soundtracks: {soundtracks.Values.toString()}");
     }
 
-    public void onPrefsLoaded(PlayerPrefsData prefs) {
-        this.prefs = prefs.audio;
+    public void onSaveLoaded(PlayerSave playerSave) {
+        save = playerSave.audio;
     }
 
     public void playSound(SoundId id) {
         var sound = sounds[id];
-        sound.play(prefs.soundVolume);
+        sound.play(save.soundVolume);
         log.log($"play {sound}");
     }
 
-    public void playSoundtrack(SoundTrackId id) {
+    public void playSoundtrack(SoundtrackId id) {
         var soundtrack = soundtracks[id];
-        soundtrack.play(prefs.musicVolume, true);
+        soundtrack.play(save.musicVolume, true);
         currentSoundtrack = soundtrack;
         log.log($"play {soundtrack}");
     }
 
-    public void stopSoundtrack(SoundTrackId id) {
+    public void stopSoundtrack(SoundtrackId id) {
         var soundtrack = soundtracks[id];
         soundtrack.stop();
         log.log($"stop {soundtrack}");
     }
 
-    public void setSoundVolume(float value) => prefs.soundVolume = value;
+    public void setSoundVolume(float value) => save.soundVolume = value;
 
-    public float getSoundVolume() => prefs.soundVolume;
+    public float getSoundVolume() => save.soundVolume;
 
     public void setMusicVolume(float value) {
-        prefs.musicVolume = value;
+        save.musicVolume = value;
         if (currentSoundtrack != null) currentSoundtrack.volume = value;
     }
 
-    public float getMusicVolume() => prefs.musicVolume;
+    public float getMusicVolume() => save.musicVolume;
 }
 
 [Serializable]
@@ -110,7 +110,7 @@ public class Sound : Audio {
 
 [Serializable]
 public class Soundtrack : Audio {
-    public SoundTrackId id;
+    public SoundtrackId id;
 
     public override string ToString() => $"soundtrack {id}";
 }
@@ -144,7 +144,7 @@ public enum SoundId {
     BallSwipeClick,
 }
 
-public enum SoundTrackId {
+public enum SoundtrackId {
     Background,
 }
 }

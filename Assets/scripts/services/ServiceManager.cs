@@ -17,15 +17,16 @@ public class ServiceManager: MonoBehaviour {
     [Inject] SoundService soundService;
     [Inject] VibrationService vibrationService;
     [Inject] PlayerPrefsService playerPrefsService;
+    [Inject] SaveService saveService;
 
     Log log;
     List<AppLifecycleListener> appLifecycleListeners;
-    List<PlayerPrefsLoadListener> prefsLoadListeners;
+    List<SaveLoadListener> saveLoadListeners;
 
     void Awake() {
         log = new(GetType(), logConfig.serviceManager);
         appLifecycleListeners = new();
-        prefsLoadListeners = new();
+        saveLoadListeners = new();
         registerServices();
     }
 
@@ -35,23 +36,24 @@ public class ServiceManager: MonoBehaviour {
         registerService(soundService);
         registerService(vibrationService);
         registerService(playerPrefsService);
-        onPrefsLoaded();
+        registerService(saveService);
+        onSavesLoaded();
     }
 
     void registerService(Service service) {
         if (service is AppLifecycleListener appLifecycleListener) {
             appLifecycleListeners.Add(appLifecycleListener);
         }
-        if (service is PlayerPrefsLoadListener prefsLoadListener) {
-            prefsLoadListeners.Add(prefsLoadListener);
+        if (service is SaveLoadListener saveLoadListener) {
+            saveLoadListeners.Add(saveLoadListener);
         }
     }
 
-    void onPrefsLoaded() {
-        log.log("on prefs loaded");
-        var prefs = playerPrefsService.getPrefs();
-        foreach (var listener in prefsLoadListeners) {
-            listener.onPrefsLoaded(prefs);
+    void onSavesLoaded() {
+        log.log("on save loaded");
+        var save = saveService.getSave();
+        foreach (var listener in saveLoadListeners) {
+            listener.onSaveLoaded(save);
         }
     }
 

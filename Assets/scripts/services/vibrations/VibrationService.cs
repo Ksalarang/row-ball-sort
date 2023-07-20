@@ -6,7 +6,7 @@ using Utils;
 using Zenject;
 
 namespace services.vibrations {
-public class VibrationService : Service, PlayerPrefsLoadListener {
+public class VibrationService : Service, SaveLoadListener {
 
 #if UNITY_ANDROID && !UNITY_EDITOR
     static AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
@@ -21,7 +21,7 @@ public class VibrationService : Service, PlayerPrefsLoadListener {
 #endif
     
     readonly Log log;
-    PlayerPrefsData prefs;
+    AudioSave save;
 
     [Inject]
     public VibrationService(LogConfig logConfig) {
@@ -29,21 +29,21 @@ public class VibrationService : Service, PlayerPrefsLoadListener {
         log.log("create");
     }
 
-    public void onPrefsLoaded(PlayerPrefsData prefs) {
-        this.prefs = prefs;
+    public void onSaveLoaded(PlayerSave playerSave) {
+        save = playerSave.audio;
     }
 
     public void vibrate(VibrationType type) {
-        if (!prefs.vibrationEnabled) return;
+        if (!save.vibrationEnabled) return;
         log.log($"vibrate: {type}");
         vibrate(getVibrationDuration(type));
     }
     
     public void setVibrationEnabled(bool enabled) {
-        prefs.vibrationEnabled = enabled;
+        save.vibrationEnabled = enabled;
     }
 
-    public bool isVibrationEnabled() => prefs.vibrationEnabled;
+    public bool isVibrationEnabled() => save.vibrationEnabled;
 
     public bool supportsVibration() => SystemInfo.supportsVibration;
 

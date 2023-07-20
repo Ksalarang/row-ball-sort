@@ -13,5 +13,6 @@ public struct LogConfig {
     public bool soundService;
     public bool vibrationService;
     public bool playerPrefsService;
+    public bool saveService;
 }
 }

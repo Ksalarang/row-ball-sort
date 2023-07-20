@@ -24,6 +24,7 @@ public class ServiceInstaller : MonoInstaller {
         bind<SoundService>();
         bind<VibrationService>();
         bind<PlayerPrefsService>();
+        bind<SaveService, SimpleSaveService>();
         // service manager
         bind(serviceManager);
     }

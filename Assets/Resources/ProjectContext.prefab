@@ -81,7 +81,8 @@ MonoBehaviour:
       sceneService: 0
       soundService: 0
       vibrationService: 0
-      playerPrefsService: 1
+      playerPrefsService: 0
+      saveService: 1
   audioSources:
     sounds:
     - clip: {fileID: 8300000, guid: e139db65ee8ed2e48acf8f837432341f, type: 3}

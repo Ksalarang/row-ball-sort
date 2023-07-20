@@ -29,7 +29,7 @@ public class GameController : MonoBehaviour {
 
     void Start() {
         log.log("start");
-        soundService.playSoundtrack(SoundTrackId.Background);
+        soundService.playSoundtrack(SoundtrackId.Background);
     }
 
     void Update() {
