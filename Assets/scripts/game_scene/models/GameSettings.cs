@@ -22,7 +22,10 @@ public struct InputSettings {
 
 [Serializable]
 public struct BallAnimationSettings {
+    [Header("vertical swipes")]
     public float verticalSwipeDuration;
+    public float ballScaleDifference;
+    [Header("horizontal swipes")]
     public float horizontalReturnSpeed;
 }
 

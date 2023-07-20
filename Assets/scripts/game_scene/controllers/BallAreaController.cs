@@ -287,9 +287,11 @@ public class BallAreaController : MonoBehaviour {
             swapBalls(coord1, coord2, false);
             action.Invoke();
         }));
-        StartCoroutine(Coroutines.scaleToAndBack(firstTransform, firstTransform.localScale * 1.2f, duration, false));
+        var scaleUp = firstTransform.localScale * (1 + animationSettings.ballScaleDifference);
+        var scaleDown = secondTransform.localScale * (1 - animationSettings.ballScaleDifference);
+        StartCoroutine(Coroutines.scaleToAndBack(firstTransform, scaleUp , duration, false));
         StartCoroutine(Coroutines.moveTo(secondTransform, position1, duration, Interpolation.AccelerateDecelerate));
-        StartCoroutine(Coroutines.scaleToAndBack(secondTransform, secondTransform.localScale * 0.8f, duration, false));
+        StartCoroutine(Coroutines.scaleToAndBack(secondTransform, scaleDown, duration, false));
     }
     #endregion
 

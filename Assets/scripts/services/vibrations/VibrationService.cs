@@ -63,7 +63,7 @@ public class VibrationService : Service, PlayerPrefsLoadListener {
 
     long getVibrationDuration(VibrationType type) {
         return type switch {
-            VibrationType.Light => 25,
+            VibrationType.Light => 20,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
