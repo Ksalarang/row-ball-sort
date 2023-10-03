@@ -1,7 +1,5 @@
 ﻿using game_scene.models;
 using game_scene.views;
-using services.sounds;
-using services.vibrations;
 using UnityEngine;
 using Utils;
 using utils.structs;
@@ -14,8 +12,6 @@ public class BallInputController : MonoBehaviour {
     [Inject] BallAreaController ballAreaController;
     [Inject] ArtView artView;
     [Inject] InputSettings settings;
-    [Inject] SoundService soundService;
-    [Inject] VibrationService vibrationService;
 
     Log log;
     bool isMobile;
